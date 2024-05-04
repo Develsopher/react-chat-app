@@ -90,11 +90,11 @@ const Chat = () => {
             className="size-5 cursor-pointer"
             onClick={() => setOpen((prev) => !prev)}
           />
-          <div className="absolute bottom-12 left-0">
+          <div className="absolute bottom-12 left-0 z-10">
             <EmojiPicker open={open} onEmojiClick={handleEmoji} />
           </div>
         </div>
-        <button className="bg-[#841a27] text-white py-2.5 px-5 rounded-lg hover:opacity-90 transition-all">
+        <button className="bg-[#841a27] opacity-90 text-white py-2.5 px-5 rounded-lg hover:opacity-100 transition-all">
           Send
         </button>
       </div>

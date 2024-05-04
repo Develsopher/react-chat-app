@@ -3,14 +3,15 @@ import { useState } from "react";
 const ChatList = () => {
   const [addMode, setAddMode] = useState(false);
   return (
-    <div className="flex-1 overflow-scroll">
-      <div className="flex items-center gap-5 p-5">
-        <div className="flex-1 bg-[#ce3c3cb7] flex items-center gap-5 rounded-lg p-2">
+    <div className="flex-1 overflow-y-scroll">
+      {/* search */}
+      <div className="flex items-center gap-2.5 p-3">
+        <div className="bg-[#ce3c3cb7] flex items-center gap-2.5 rounded-lg p-2">
           <img src="./search.png" alt="search" className="size-5" />
           <input
             type="text"
             placeholder="Search"
-            className="bg-transparent border-none outline-none text-white flex-1"
+            className="bg-transparent border-none outline-none text-white"
           />
         </div>
         <img
@@ -20,15 +21,16 @@ const ChatList = () => {
           onClick={() => setAddMode((prev) => !prev)}
         />
       </div>
+      {/* list */}
       <div className="flex items-center gap-5 p-5 cursor-pointer border-b border-[#dddddd35]">
         <img
           src="./avatar.png"
           alt="avatar"
           className="size-12 rounded-full object-cover"
         />
-        <div className="flex flex-col gap-2">
-          <span className="font-medium">Jane Doe</span>
-          <p className=" text-sm font-light">Hello</p>
+        <div className="flex flex-col gap-1.5">
+          <span className="font-light">Jane Doe</span>
+          <p className="text-xs font-light">Hello</p>
         </div>
       </div>
       <div className="flex items-center gap-5 p-5 cursor-pointer border-b border-[#dddddd35]">
@@ -37,9 +39,9 @@ const ChatList = () => {
           alt="avatar"
           className="size-12 rounded-full object-cover"
         />
-        <div className="flex flex-col gap-2">
-          <span className="font-medium">Jane Doe</span>
-          <p className=" text-sm font-light">Hello</p>
+        <div className="flex flex-col gap-1.5">
+          <span className="font-light">Jane Doe</span>
+          <p className="text-xs font-light">Hello</p>
         </div>
       </div>
       <div className="flex items-center gap-5 p-5 cursor-pointer border-b border-[#dddddd35]">
@@ -48,9 +50,9 @@ const ChatList = () => {
           alt="avatar"
           className="size-12 rounded-full object-cover"
         />
-        <div className="flex flex-col gap-2">
-          <span className="font-medium">Jane Doe</span>
-          <p className=" text-sm font-light">Hello</p>
+        <div className="flex flex-col gap-1.5">
+          <span className="font-light">Jane Doe</span>
+          <p className="text-xs font-light">Hello</p>
         </div>
       </div>
       <div className="flex items-center gap-5 p-5 cursor-pointer border-b border-[#dddddd35]">
@@ -59,9 +61,9 @@ const ChatList = () => {
           alt="avatar"
           className="size-12 rounded-full object-cover"
         />
-        <div className="flex flex-col gap-2">
-          <span className="font-medium">Jane Doe</span>
-          <p className=" text-sm font-light">Hello</p>
+        <div className="flex flex-col gap-1.5">
+          <span className="font-light">Jane Doe</span>
+          <p className="text-xs font-light">Hello</p>
         </div>
       </div>
     </div>

@@ -1,9 +1,16 @@
 import EmojiPicker from "emoji-picker-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const Chat = () => {
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
+
+  const endRef = useRef(null);
+
+  // 스크롤 세팅(최근 대화)
+  useEffect(() => {
+    endRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, []);
 
   const handleEmoji = (e) => {
     setText((prev) => prev + e.emoji);
@@ -12,6 +19,7 @@ const Chat = () => {
 
   return (
     <div className="w-1/2 border-x border-[#dddddd35] h-full flex flex-col">
+      {/* header */}
       <div className="p-5 flex items-center justify-between border-b border-[#dddddd35]">
         <div className="flex items-center gap-5">
           <img
@@ -32,6 +40,7 @@ const Chat = () => {
           <img src="./info.png" alt="info" className="size-5" />
         </div>
       </div>
+      {/* center */}
       <div className="p-5 flex-1 overflow-y-scroll flex flex-col gap-5">
         <div className="message max-w-[70%] flex gap-5">
           <img
@@ -65,7 +74,9 @@ const Chat = () => {
             <span className="text-xs">1 min ago</span>
           </div>
         </div>
+        <div ref={endRef}></div>
       </div>
+      {/* bottom */}
       <div className="p-5 flex items-center justify-between border-t border-[#dddddd35] gap-5 mt-auto">
         <div className="flex gap-5">
           <img src="./img.png" alt="image" className="size-5 cursor-pointer" />
@@ -94,7 +105,7 @@ const Chat = () => {
             <EmojiPicker open={open} onEmojiClick={handleEmoji} />
           </div>
         </div>
-        <button className="bg-[#841a27] opacity-90 text-white py-2.5 px-5 rounded-lg hover:opacity-100 transition-all">
+        <button className="bg-[#841a27] opacity-90 text-white py-2.5 px-5 rounded-lg hover:opacity-100 transition-all text-sm">
           Send
         </button>
       </div>

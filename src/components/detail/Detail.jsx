@@ -1,18 +1,18 @@
 const Detail = () => {
   return (
-    <div className="flex-1">
+    <div className="w-1/4">
       <div className="py-7 px-5 flex flex-col items-center gap-3 border-b border-[#dddddd35]">
         <img
           src="./avatar.png"
           alt="avatar"
           className="w-[100px] h-[100px] rounded-full"
         />
-        <h2>Jane Doe</h2>
+        <h2 className="text-lg font-bold">Jane Doe</h2>
         <p className="text-sm font-light text-[#d4d2d2]">
           Lorem ipsum dolor sti amet.
         </p>
       </div>
-      <div className="p-5 flex flex-col gap-7">
+      <div className="p-5 flex flex-col gap-5">
         <div className="option">
           <div className="title flex items-center justify-between">
             <span>Chat Settings</span>
@@ -70,8 +70,11 @@ const Detail = () => {
             />
           </div>
         </div>
-        <button className="px-2 bg-[#841a27] py-2 rounded-lg opacity-90 hover:opacity-100 transition-all">
+        <button className="px-2 bg-[#841a27] py-2 rounded-lg opacity-90 hover:opacity-100 transition-all text-sm">
           Block User
+        </button>
+        <button className="px-2 bg-[#584648] py-2 rounded-lg opacity-90 hover:opacity-100 transition-all text-sm">
+          Logout
         </button>
       </div>
     </div>

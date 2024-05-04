@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const [avatar, setAvatar] = useState({
@@ -16,13 +17,17 @@ const Login = () => {
     }
   };
 
+  const handleLogin = (e) => {
+    e.preventDefault();
+  };
+
   return (
     <div className="w-full h-full flex items-center gap-[100px]">
       {/* left */}
       <div className="flex-1 flex flex-col items-center gap-5">
         <h2>Welcome back,</h2>
         <form
-          onSubmit={() => {}}
+          onSubmit={handleLogin}
           className="flex flex-col items-center justify-center gap-5"
         >
           <input

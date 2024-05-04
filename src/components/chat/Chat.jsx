@@ -32,7 +32,40 @@ const Chat = () => {
           <img src="./info.png" alt="info" className="size-5" />
         </div>
       </div>
-      <div className="p-5 flex-1">hello, center</div>
+      <div className="p-5 flex-1 overflow-y-scroll flex flex-col gap-5">
+        <div className="message max-w-[70%] flex gap-5">
+          <img
+            src="./avatar.png"
+            alt="avatar"
+            className="size-8 rounded-full object-cover"
+          />
+          <div className="texts flex-1 flex flex-col gap-0.5">
+            <p className="p-2.5 bg-[#ce3c3cb7] rounded-lg">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. In
+              eligendi, incidunt tenetur, sapiente porro non quo odit aperiam
+              delectus itaque quod. Dolorum, quam. Ea hic beatae iusto officia
+              rerum voluptas.
+            </p>
+            <span className="text-xs">11 min ago</span>
+          </div>
+        </div>
+        <div className="message max-w-[70%] flex gap-5 own self-end">
+          <div className="texts flex-1 flex flex-col gap-0.5">
+            <img
+              src="https://develsopher-nextjs.s3.ap-northeast-2.amazonaws.com/%E1%84%80%E1%85%A1%E1%84%89%E1%85%A1%E1%86%BC+%E1%84%86%E1%85%A6%E1%84%86%E1%85%A9%E1%84%85%E1%85%B5-1.png"
+              alt=""
+              className="w-full h-[300px] rounded-lg object-cover"
+            />
+            <p className="p-2.5 bg-[#841a27] rounded-lg">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. In
+              eligendi, incidunt tenetur, sapiente porro non quo odit aperiam
+              delectus itaque quod. Dolorum, quam. Ea hic beatae iusto officia
+              rerum voluptas.
+            </p>
+            <span className="text-xs">1 min ago</span>
+          </div>
+        </div>
+      </div>
       <div className="p-5 flex items-center justify-between border-t border-[#dddddd35] gap-5 mt-auto">
         <div className="flex gap-5">
           <img src="./img.png" alt="image" className="size-5 cursor-pointer" />

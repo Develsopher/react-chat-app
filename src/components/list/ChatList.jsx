@@ -1,4 +1,5 @@
 import { useState } from "react";
+import AddUser from "./addUser";
 
 const ChatList = () => {
   const [addMode, setAddMode] = useState(false);
@@ -11,15 +12,9 @@ const ChatList = () => {
           <input
             type="text"
             placeholder="Search"
-            className="bg-transparent border-none outline-none text-white"
+            className="bg-transparent border-none outline-none text-white placeholder:text-slate-300"
           />
         </div>
-        <img
-          src={addMode ? "./minus.png" : "./plus.png"}
-          alt="Plus"
-          className="size-10 bg-[#ce3c3cb7] p-2 rounded-lg cursor-pointer"
-          onClick={() => setAddMode((prev) => !prev)}
-        />
       </div>
       {/* list */}
       <div className="flex items-center gap-5 p-5 cursor-pointer border-b border-[#dddddd35]">
@@ -66,6 +61,15 @@ const ChatList = () => {
           <p className="text-xs font-light">Hello</p>
         </div>
       </div>
+      <div className="flex justify-center items-center mt-4">
+        <img
+          src={addMode ? "./minus.png" : "./plus.png"}
+          alt="Plus"
+          className="size-10 bg-[#ce3c3cb7] p-2 rounded-lg cursor-pointer"
+          onClick={() => setAddMode((prev) => !prev)}
+        />
+      </div>
+      {addMode && <AddUser />}
     </div>
   );
 };

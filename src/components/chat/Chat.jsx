@@ -90,7 +90,7 @@ const Chat = () => {
         <input
           type="text"
           placeholder="Type a message..."
-          className="flex-1 p-3 rounded-lg text-sm border-none outline-none text-white bg-[#ce3c3cb7]"
+          className="flex-1 p-3 rounded-lg text-sm border-none outline-none text-white bg-[#ce3c3cb7] placeholder:text-slate-300"
           value={text}
           onChange={(e) => setText(e.target.value)}
         />

@@ -1,5 +1,9 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth, db } from "../../lib/firebase";
+import { doc, setDoc } from "firebase/firestore";
+import upload from "../../lib/upload";
 
 const Login = () => {
   const [avatar, setAvatar] = useState({
@@ -19,6 +23,39 @@ const Login = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
+  };
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const formData = new FormData(e.target);
+
+    const { username, email, password } = Object.fromEntries(formData);
+
+    try {
+      const res = await createUserWithEmailAndPassword(auth, email, password);
+
+      const imgUrl = await upload(avatar.file);
+
+      await setDoc(doc(db, "users", res.user.uid), {
+        username,
+        email,
+        avatar: imgUrl,
+        id: res.user.uid,
+        blocked: [],
+      });
+
+      await setDoc(doc(db, "userchats", res.user.uid), {
+        chats: [],
+      });
+
+      toast.success("회원가입에 성공하였습니다!");
+    } catch (err) {
+      console.log(err);
+      toast.error(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -44,7 +81,7 @@ const Login = () => {
           />
           <button
             disabled={loading}
-            className="w-full bg-[#841a27] opacity-90 text-white py-2.5 px-5 rounded-lg hover:opacity-100 transition-all text-sm"
+            className="w-full bg-[#841a27] opacity-90 text-white py-2.5 px-5 rounded-lg hover:opacity-100 transition-all text-sm disabled:cursor-not-allowed disabled:bg-[#584648]"
           >
             {loading ? "Loading" : "Sign In"}
           </button>
@@ -55,7 +92,7 @@ const Login = () => {
       <div className="flex-1 flex flex-col items-center gap-5">
         <h2>Create an Account</h2>
         <form
-          onSubmit={() => {}}
+          onSubmit={handleRegister}
           className="flex flex-col items-center justify-center gap-5"
         >
           <label
@@ -95,7 +132,7 @@ const Login = () => {
           />
           <button
             disabled={loading}
-            className="w-full bg-[#841a27] opacity-90 text-white py-2.5 px-5 rounded-lg hover:opacity-100 transition-all text-sm"
+            className="w-full bg-[#841a27] opacity-90 text-white py-2.5 px-5 rounded-lg hover:opacity-100 transition-all text-sm disabled:cursor-not-allowed disabled:bg-[#584648]"
           >
             {loading ? "Loading" : "Sign Up"}
           </button>

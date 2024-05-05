@@ -1,8 +1,40 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddUser from "./addUser";
+import { useUserStore } from "../../lib/userStore";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import { db } from "../../lib/firebase";
 
 const ChatList = () => {
   const [addMode, setAddMode] = useState(false);
+  const [chats, setChats] = useState([]);
+
+  const { currentUser } = useUserStore();
+
+  useEffect(() => {
+    const unsub = onSnapshot(
+      doc(db, "userchats", currentUser.id),
+      async (res) => {
+        const items = res.data().chats;
+
+        const promises = items.map(async (item) => {
+          const userDocRef = doc(db, "users", item.receiverId);
+          const userDocSnap = await getDoc(userDocRef);
+
+          const user = userDocSnap.data();
+
+          return { ...item, user };
+        });
+        const chatData = await Promise.all(promises);
+
+        setChats(chatData.sort((a, b) => b.updatedAt - a.updatedAt));
+      },
+    );
+
+    return () => {
+      unsub();
+    };
+  }, [currentUser.id]);
+
   return (
     <div className="flex-1 overflow-y-scroll">
       {/* search */}
@@ -17,50 +49,23 @@ const ChatList = () => {
         </div>
       </div>
       {/* list */}
-      <div className="flex items-center gap-5 p-5 cursor-pointer border-b border-[#dddddd35]">
-        <img
-          src="./avatar.png"
-          alt="avatar"
-          className="size-12 rounded-full object-cover"
-        />
-        <div className="flex flex-col gap-1.5">
-          <span className="font-light">Jane Doe</span>
-          <p className="text-xs font-light">Hello</p>
+      {chats.map((chat) => (
+        <div
+          className="flex items-center gap-5 p-5 cursor-pointer border-b border-[#dddddd35]"
+          key={chat.chatId}
+        >
+          <img
+            src="./avatar.png"
+            alt="avatar"
+            className="size-12 rounded-full object-cover"
+          />
+          <div className="flex flex-col gap-1.5">
+            <span className="font-light">Jane Doe</span>
+            <p className="text-xs font-light">Hello</p>
+          </div>
         </div>
-      </div>
-      <div className="flex items-center gap-5 p-5 cursor-pointer border-b border-[#dddddd35]">
-        <img
-          src="./avatar.png"
-          alt="avatar"
-          className="size-12 rounded-full object-cover"
-        />
-        <div className="flex flex-col gap-1.5">
-          <span className="font-light">Jane Doe</span>
-          <p className="text-xs font-light">Hello</p>
-        </div>
-      </div>
-      <div className="flex items-center gap-5 p-5 cursor-pointer border-b border-[#dddddd35]">
-        <img
-          src="./avatar.png"
-          alt="avatar"
-          className="size-12 rounded-full object-cover"
-        />
-        <div className="flex flex-col gap-1.5">
-          <span className="font-light">Jane Doe</span>
-          <p className="text-xs font-light">Hello</p>
-        </div>
-      </div>
-      <div className="flex items-center gap-5 p-5 cursor-pointer border-b border-[#dddddd35]">
-        <img
-          src="./avatar.png"
-          alt="avatar"
-          className="size-12 rounded-full object-cover"
-        />
-        <div className="flex flex-col gap-1.5">
-          <span className="font-light">Jane Doe</span>
-          <p className="text-xs font-light">Hello</p>
-        </div>
-      </div>
+      ))}
+
       <div className="flex justify-center items-center mt-4">
         <img
           src={addMode ? "./minus.png" : "./plus.png"}

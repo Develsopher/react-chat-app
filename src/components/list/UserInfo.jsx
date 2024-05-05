@@ -1,13 +1,17 @@
+import { useUserStore } from "../../lib/userStore";
+
 const UserInfo = () => {
+  const { currentUser } = useUserStore();
+
   return (
     <div className="p-5 flex items-center justify-between">
       <div className="flex items-center gap-5">
         <img
-          src="./avatar.png"
+          src={currentUser.avatar || "./avatar.png"}
           alt="avatar"
           className="size-12 rounded-full object-cover"
         />
-        <h2>John Doe</h2>
+        <h2>{currentUser.username}</h2>
       </div>
       <div className="flex gap-5">
         <img src="./more.png" alt="more" className="size-5 cursor-pointer" />

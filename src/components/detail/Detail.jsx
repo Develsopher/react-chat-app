@@ -1,3 +1,5 @@
+import { auth } from "../../lib/firebase";
+
 const Detail = () => {
   return (
     <div className="w-1/4">
@@ -73,7 +75,10 @@ const Detail = () => {
         <button className="px-2 bg-[#841a27] py-2 rounded-lg opacity-90 hover:opacity-100 transition-all text-sm">
           Block User
         </button>
-        <button className="px-2 bg-[#584648] py-2 rounded-lg opacity-90 hover:opacity-100 transition-all text-sm">
+        <button
+          className="px-2 bg-[#584648] py-2 rounded-lg opacity-90 hover:opacity-100 transition-all text-sm"
+          onClick={() => auth.signOut()}
+        >
           Logout
         </button>
       </div>

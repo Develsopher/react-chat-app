@@ -1,16 +1,35 @@
 import EmojiPicker from "emoji-picker-react";
+import { doc, onSnapshot } from "firebase/firestore";
 import { useEffect, useRef, useState } from "react";
+import { db } from "../../lib/firebase";
+import { useChatStore } from "../../lib/chatStore";
+import { useUserStore } from "../../lib/userStore";
 
 const Chat = () => {
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
+  const [chat, setChat] = useState();
 
   const endRef = useRef(null);
+  const { currentUser } = useUserStore();
+  const { chatId } = useChatStore();
 
   // 스크롤 세팅(최근 대화)
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
+
+  useEffect(() => {
+    const unSub = onSnapshot(doc(db, "chats", chatId), (res) => {
+      setChat(res.data());
+    });
+
+    return () => {
+      unSub();
+    };
+  }, [chatId]);
+
+  console.log("chat", chat);
 
   const handleEmoji = (e) => {
     setText((prev) => prev + e.emoji);
@@ -42,38 +61,26 @@ const Chat = () => {
       </div>
       {/* center */}
       <div className="p-5 flex-1 overflow-y-scroll flex flex-col gap-5">
-        <div className="message max-w-[70%] flex gap-5">
-          <img
-            src="./avatar.png"
-            alt="avatar"
-            className="size-8 rounded-full object-cover"
-          />
-          <div className="texts flex-1 flex flex-col gap-0.5">
-            <p className="p-2.5 bg-[#ce3c3cb7] rounded-lg">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. In
-              eligendi, incidunt tenetur, sapiente porro non quo odit aperiam
-              delectus itaque quod. Dolorum, quam. Ea hic beatae iusto officia
-              rerum voluptas.
-            </p>
-            <span className="text-xs">11 min ago</span>
-          </div>
-        </div>
-        <div className="message max-w-[70%] flex gap-5 own self-end">
-          <div className="texts flex-1 flex flex-col gap-0.5">
+        {chat?.messages?.map((msg) => (
+          <div
+            className={`message max-w-[70%] flex gap-5 ${
+              msg.senderId === currentUser?.id ? "" : "self-end"
+            }`}
+            key={msg?.createdAt}
+          >
             <img
-              src="https://develsopher-nextjs.s3.ap-northeast-2.amazonaws.com/%E1%84%80%E1%85%A1%E1%84%89%E1%85%A1%E1%86%BC+%E1%84%86%E1%85%A6%E1%84%86%E1%85%A9%E1%84%85%E1%85%B5-1.png"
-              alt=""
-              className="w-full h-[300px] rounded-lg object-cover"
+              src="./avatar.png"
+              alt="avatar"
+              className="size-8 rounded-full object-cover"
             />
-            <p className="p-2.5 bg-[#841a27] rounded-lg">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. In
-              eligendi, incidunt tenetur, sapiente porro non quo odit aperiam
-              delectus itaque quod. Dolorum, quam. Ea hic beatae iusto officia
-              rerum voluptas.
-            </p>
-            <span className="text-xs">1 min ago</span>
+            <div className="texts flex-1 flex flex-col gap-0.5">
+              {msg.img && <img src={msg.img} alt="" />}
+              <p className="p-2.5 bg-[#ce3c3cb7] rounded-lg">{msg.text}</p>
+              {/* <span className="text-xs">{format()}</span> */}
+            </div>
           </div>
-        </div>
+        ))}
+
         <div ref={endRef}></div>
       </div>
       {/* bottom */}

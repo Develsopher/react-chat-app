@@ -55,12 +55,12 @@ const ChatList = () => {
           key={chat.chatId}
         >
           <img
-            src="./avatar.png"
+            src={chat.user.avatar || "./avatar.png"}
             alt="avatar"
             className="size-12 rounded-full object-cover"
           />
           <div className="flex flex-col gap-1.5">
-            <span className="font-light">Jane Doe</span>
+            <span className="font-light">{chat.user.username}</span>
             <p className="text-xs font-light">Hello</p>
           </div>
         </div>

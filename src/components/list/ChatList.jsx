@@ -8,6 +8,7 @@ import { useChatStore } from "../../lib/chatStore";
 const ChatList = () => {
   const [addMode, setAddMode] = useState(false);
   const [chats, setChats] = useState([]);
+  const [input, setInput] = useState("");
 
   const { currentUser } = useUserStore();
   const { changeChat } = useChatStore();
@@ -60,6 +61,11 @@ const ChatList = () => {
       console.log(err);
     }
   };
+
+  const filteredChats = chats.filter((c) =>
+    c.user.username.toLowerCase().includes(input.toLowerCase()),
+  );
+
   return (
     <div className="flex-1 overflow-y-scroll">
       {/* search */}
@@ -70,11 +76,12 @@ const ChatList = () => {
             type="text"
             placeholder="Search"
             className="bg-transparent border-none outline-none text-white placeholder:text-slate-300"
+            onChange={(e) => setInput(e.target.value)}
           />
         </div>
       </div>
       {/* list */}
-      {chats.map((chat) => (
+      {filteredChats.map((chat) => (
         <div
           className="flex items-center gap-5 p-5 cursor-pointer border-b border-[#dddddd35]"
           key={chat.chatId}

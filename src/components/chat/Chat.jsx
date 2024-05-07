@@ -10,12 +10,16 @@ import { useEffect, useRef, useState } from "react";
 import { db } from "../../lib/firebase";
 import { useChatStore } from "../../lib/chatStore";
 import { useUserStore } from "../../lib/userStore";
+import upload from "../../lib/upload";
 
 const Chat = () => {
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
   const [chat, setChat] = useState();
-
+  const [img, setImg] = useState({
+    file: null,
+    url: "",
+  });
   const endRef = useRef(null);
   const { currentUser } = useUserStore();
   const { chatId, user, isCurrentUserBlocked, isReceiverBlocked } =
@@ -41,17 +45,30 @@ const Chat = () => {
     setOpen(false);
   };
 
+  const handleImg = (e) => {
+    if (e.target.files[0]) {
+      setImg({
+        file: e.target.files[0],
+        url: URL.createObjectURL(e.target.files[0]),
+      });
+    }
+  };
+
   const handleSend = async () => {
     if (text === "") return;
 
     let imgUrl = null;
 
     try {
+      if (img.file) {
+        imgUrl = await upload(img.file);
+      }
       await updateDoc(doc(db, "chats", chatId), {
         messages: arrayUnion({
           senderId: currentUser.id,
           text,
           createdAt: new Date(),
+          ...(imgUrl && { img: imgUrl }),
         }),
       });
 
@@ -82,6 +99,10 @@ const Chat = () => {
       console.log(err);
     } finally {
       setText("");
+      setImg({
+        file: null,
+        url: "",
+      });
     }
   };
 
@@ -131,13 +152,31 @@ const Chat = () => {
             </div>
           </div>
         ))}
-
+        {img.url && (
+          <div className="message max-w-[70%] flex gap-5 self-end">
+            <div className="texts flex-1 flex flex-col gap-0.5">
+              <img src={img.url} alt="" />
+            </div>
+          </div>
+        )}
         <div ref={endRef}></div>
       </div>
       {/* bottom */}
       <div className="p-5 flex items-center justify-between border-t border-[#dddddd35] gap-5 mt-auto">
         <div className="flex gap-5">
-          <img src="./img.png" alt="image" className="size-5 cursor-pointer" />
+          <label htmlFor="file">
+            <img
+              src="./img.png"
+              alt="image"
+              className="size-5 cursor-pointer"
+            />
+          </label>
+          <input
+            type="file"
+            id="file"
+            style={{ display: "none" }}
+            onChange={handleImg}
+          />
           <img
             src="./camera.png"
             alt="camera"

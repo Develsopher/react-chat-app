@@ -1,6 +1,33 @@
-import { auth } from "../../lib/firebase";
+import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
+import { useChatStore } from "../../lib/chatStore";
+import { auth, db } from "../../lib/firebase";
+import { useUserStore } from "../../lib/userStore";
 
 const Detail = () => {
+  const {
+    chatId,
+    user,
+    isCurrentUserBlocked,
+    isReceiverBlocked,
+    changeBlock,
+    resetChat,
+  } = useChatStore();
+  const { currentUser } = useUserStore();
+
+  const handleBlock = async () => {
+    if (!user) return;
+
+    const userDocRef = doc(db, "users", currentUser.id);
+
+    try {
+      await updateDoc(userDocRef, {
+        blocked: isReceiverBlocked ? arrayRemove(user.id) : arrayUnion(user.id),
+      });
+      changeBlock();
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <div className="w-1/4">
       <div className="py-7 px-5 flex flex-col items-center gap-3 border-b border-[#dddddd35]">
@@ -72,8 +99,15 @@ const Detail = () => {
             />
           </div>
         </div>
-        <button className="px-2 bg-[#841a27] py-2 rounded-lg opacity-90 hover:opacity-100 transition-all text-sm">
-          Block User
+        <button
+          className="px-2 bg-[#841a27] py-2 rounded-lg opacity-90 hover:opacity-100 transition-all text-sm"
+          onClick={handleBlock}
+        >
+          {isCurrentUserBlocked
+            ? "You are Blocked!"
+            : isReceiverBlocked
+            ? "User blocked"
+            : "Block User"}
         </button>
         <button
           className="px-2 bg-[#584648] py-2 rounded-lg opacity-90 hover:opacity-100 transition-all text-sm"

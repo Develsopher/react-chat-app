@@ -203,8 +203,9 @@ const Chat = () => {
           </div>
         </div>
         <button
-          className="bg-[#841a27] opacity-90 text-white py-2.5 px-5 rounded-lg hover:opacity-100 transition-all text-sm"
+          className="bg-[#841a27] opacity-90 text-white py-2.5 px-5 rounded-lg hover:opacity-100 transition-all text-sm disabled:bg-[#584648] disabled:cursor-not-allowed"
           onClick={handleSend}
+          disabled={isCurrentUserBlocked || isReceiverBlocked}
         >
           Send
         </button>

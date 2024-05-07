@@ -89,7 +89,11 @@ const ChatList = () => {
             className="size-12 rounded-full object-cover"
           />
           <div className="flex flex-col gap-1.5">
-            <span className="font-light">{chat.user.username}</span>
+            <span>
+              {chat.user.blocked.includes(currentUser.id)
+                ? "User"
+                : chat.user.username}
+            </span>
             <p className="text-xs font-light">{chat.lastMessage}</p>
           </div>
         </div>

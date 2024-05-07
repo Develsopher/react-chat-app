@@ -1,5 +1,11 @@
 import EmojiPicker from "emoji-picker-react";
-import { doc, onSnapshot } from "firebase/firestore";
+import {
+  arrayUnion,
+  doc,
+  getDoc,
+  onSnapshot,
+  updateDoc,
+} from "firebase/firestore";
 import { useEffect, useRef, useState } from "react";
 import { db } from "../../lib/firebase";
 import { useChatStore } from "../../lib/chatStore";
@@ -12,7 +18,8 @@ const Chat = () => {
 
   const endRef = useRef(null);
   const { currentUser } = useUserStore();
-  const { chatId } = useChatStore();
+  const { chatId, user, isCurrentUserBlocked, isReceiverBlocked } =
+    useChatStore();
 
   // 스크롤 세팅(최근 대화)
   useEffect(() => {
@@ -29,11 +36,53 @@ const Chat = () => {
     };
   }, [chatId]);
 
-  console.log("chat", chat);
-
   const handleEmoji = (e) => {
     setText((prev) => prev + e.emoji);
     setOpen(false);
+  };
+
+  const handleSend = async () => {
+    if (text === "") return;
+
+    let imgUrl = null;
+
+    try {
+      await updateDoc(doc(db, "chats", chatId), {
+        messages: arrayUnion({
+          senderId: currentUser.id,
+          text,
+          createdAt: new Date(),
+        }),
+      });
+
+      const userIDs = [currentUser.id, user.id];
+
+      userIDs.forEach(async (id) => {
+        const userChatsRef = doc(db, "userchats", id);
+        const userChatsSnapshot = await getDoc(userChatsRef);
+
+        if (userChatsSnapshot.exists()) {
+          const userChatsData = userChatsSnapshot.data();
+
+          const chatIndex = userChatsData.chats.findIndex(
+            (c) => c.chatId === chatId,
+          );
+
+          userChatsData.chats[chatIndex].lastMessage = text;
+          userChatsData.chats[chatIndex].isSeen =
+            id === currentUser.id ? true : false;
+          userChatsData.chats[chatIndex].updatedAt = Date.now();
+
+          await updateDoc(userChatsRef, {
+            chats: userChatsData.chats,
+          });
+        }
+      });
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setText("");
+    }
   };
 
   return (
@@ -42,12 +91,12 @@ const Chat = () => {
       <div className="p-5 flex items-center justify-between border-b border-[#dddddd35]">
         <div className="flex items-center gap-5">
           <img
-            src="./avatar.png"
+            src={user?.avatar || "./avatar.png"}
             alt="avatar"
             className="size-14 rounded-full object-cover"
           />
           <div className="flex flex-col gap-1">
-            <span className="">Jane Doe</span>
+            <span className="">{user?.username}</span>
             <p className="text-sm font-light text-[#d4d2d2]">
               Lorem ipsum dolor sit amet
             </p>
@@ -64,15 +113,17 @@ const Chat = () => {
         {chat?.messages?.map((msg) => (
           <div
             className={`message max-w-[70%] flex gap-5 ${
-              msg.senderId === currentUser?.id ? "" : "self-end"
+              msg.senderId === currentUser?.id ? "self-end" : ""
             }`}
             key={msg?.createdAt}
           >
-            <img
-              src="./avatar.png"
-              alt="avatar"
-              className="size-8 rounded-full object-cover"
-            />
+            {msg.senderId !== currentUser?.id && (
+              <img
+                src="./avatar.png"
+                alt="avatar"
+                className="size-8 rounded-full object-cover"
+              />
+            )}
             <div className="texts flex-1 flex flex-col gap-0.5">
               {msg.img && <img src={msg.img} alt="" />}
               <p className="p-2.5 bg-[#ce3c3cb7] rounded-lg">{msg.text}</p>
@@ -112,7 +163,10 @@ const Chat = () => {
             <EmojiPicker open={open} onEmojiClick={handleEmoji} />
           </div>
         </div>
-        <button className="bg-[#841a27] opacity-90 text-white py-2.5 px-5 rounded-lg hover:opacity-100 transition-all text-sm">
+        <button
+          className="bg-[#841a27] opacity-90 text-white py-2.5 px-5 rounded-lg hover:opacity-100 transition-all text-sm"
+          onClick={handleSend}
+        >
           Send
         </button>
       </div>
